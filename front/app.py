@@ -3,13 +3,10 @@ from requests import request
 import socket
 
 app = Flask(__name__)
-   
-hostname = socket.gethostname()    
-ipaddress = socket.gethostbyname(hostname)
 
 @app.route('/')
 def get():
-    return render_template("home.html", ip=ipaddress)
+    return render_template("home.html")
 
 if __name__ == '__main__':
     app.run(debug=True)

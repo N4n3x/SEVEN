@@ -26,7 +26,7 @@
 
 <script src="{{url_for('static', filename='map_seven.js')}}"></script>
 <script>
-    const seven_map = new Seven_map("map", 49.5, -0.1, 8, "http://{{ip}}:5000/weather/temperature");
+    const seven_map = new Seven_map("map", 49.5, -0.1, 8, "http://192.168.1.29:5000/weather/temperature");
     seven_map.Display();
     // function sleep(ms) {
     //     return new Promise(resolve => setTimeout(resolve, ms));
