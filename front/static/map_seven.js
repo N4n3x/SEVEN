@@ -2,7 +2,7 @@
 "use strict";
 
 class Seven_map {
-    constructor(targetId, lat, lng, zoom) {
+    constructor(targetId, lat, lng, zoom, apiurl) {
         this.targetId = targetId;
         this.map;
         this.marker;
@@ -17,8 +17,8 @@ class Seven_map {
             'minWidth': '100',
             'className': 'custom'
         };
-        this.localUrl = 'http://192.168.8.164:5000/weather/temperature';
-        this.devUrl = 'http://192.168.8.164:5000/weather/temperature';
+        // this.localUrl = 'http://192.168.8.164:5000/weather/temperature';
+        this.devUrl = apiurl;
         this.leafletUrl = 'https://tile.jawg.io/jawg-streets/{z}/{x}/{y}.png?access-token=';
         this.leafletAttrib = {
             minZoom: 4,
@@ -40,14 +40,18 @@ class Seven_map {
 
     Get_geojson() {
         let site_map = this;
-        let rep = $.get(window.location.hostname == "localhost" ? site_map.localUrl : site_map.devUrl, function(data) {
+        let rep = $.get(site_map.devUrl, function(data) {
             return data
         });
+        // let rep = $.get(window.location.hostname == "localhost" ? site_map.localUrl : site_map.devUrl, function(data) {
+        //     return data
+        // });
         let data = rep;
         return data;
     }
 
     Add_markers_on_map(data, filter = {}) {
+        console.log(data);
         let site_map = this;
         let geoData = data.map(function(location){
             return {
