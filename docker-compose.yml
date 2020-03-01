@@ -1,0 +1,77 @@
+# Use root/example as user/password credentials
+version: '3.1'
+
+services:
+
+
+  reverse:
+    image: alp1ne/ngnix
+    restart: unless-stopped
+
+#-------------------- Ne marche pas
+  # traefik:
+  #   image: traefik:v2.1
+  #   restart: unless-stopped
+  #   command: 
+  #     - "--log.level=DEBUG"
+  #     - "--api"
+  #     - "--api.dashboard=true"
+  #     - "--providers.docker=true"
+  #     - "--entrypoints.web.address=:80"
+  #     - "--entrypoints.websecure.address=:443"
+  #     - "--providers.docker.exposedByDefault=false"
+  #   ports:
+  #     - 80:80
+  #     - 443:443
+  #   labels:
+  #     - "traefik.http.routers.http_traefik_dashboard.rule=Host(`traefik.localhost`)"
+  #     - "traefik.http.routers.http_traefik_dashboard.service=api@internal"
+  #     - "traefik.http.routers.http_traefik_dashboard.entrypoints=web"
+  #     - "traefik.enable=true" #Dit a traefik de router
+  #   volumes:
+  #     - /var/run/docker.sock:/var/run/docker.sock:ro
+#-----------------------
+
+  mongo:
+    image: mongo
+    restart: unless-stopped
+    container_name: seven_mongo
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+    volumes: 
+      - /opt/seven/mongo:/data/db
+
+  seven_api:
+    image: flask_base
+    build: ./Dockerfiles
+    restart: unless-stopped
+    container_name: seven_api
+    ports:
+      - 5000:5000
+    volumes: 
+      - ./api:/app
+    labels:
+      - "traefik.http.routers.http_seven_api.rule=Host(`api.localhost`)"
+      - "traefik.http.routers.http_seven_api.entrypoints=web"
+      - "traefik.enable=true" #Dit a traefik de router
+
+  seven_front:
+    image: flask_base
+    build: ./Dockerfiles
+    restart: unless-stopped
+    container_name: seven_front
+    # networks:
+    #   - web
+    ports:
+      - 5001:5000
+    volumes: 
+      - ./front:/app
+    labels:
+      - "traefik.http.routers.http_seven_front.rule=Host(`front.localhost`)"
+      - "traefik.http.routers.http_seven_front.entrypoints=web"
+      - "traefik.enable=true" #Dit a traefik de router
+# networks:
+#   internal:
+#   web:
+#     external: true    
