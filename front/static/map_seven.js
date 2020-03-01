@@ -78,7 +78,7 @@ class Seven_map {
                 keys.forEach((key)=>{
                     console.log(key)
                     if(key.split("/").length > 1){
-                        html = html + key + " : Température " + feature.properties[key]["temperature"] + ", Humidité " + feature.properties[key]["temperature"] + "<br>"
+                        html = html + key + " : Température " + feature.properties[key]["temperature"] + ", Humidité " + feature.properties[key]["humidite"] + "<br>"
                     }
                 });
                 layer.bindPopup(html);
