@@ -40,37 +40,48 @@ class Seven_map {
 
     Get_geojson() {
         let site_map = this;
-        let rep = $.get(site_map.devUrl, function(data) {
+        let rep = $.get(site_map.devUrl, function (data) {
             return data
         });
+
         // let rep = $.get(window.location.hostname == "localhost" ? site_map.localUrl : site_map.devUrl, function(data) {
         //     return data
         // });
-        let data = rep;
-        return data;
+
+        return rep;
     }
 
     Add_markers_on_map(data, filter = {}) {
-        console.log(data);
+        // console.log(data);
         let site_map = this;
-        let geoData = data.map(function(location){
-            return {
-                type: 'Feature',
-                geometry: {
-                type: 'Point',
-                    coordinates: [location.longitude, location.latitude]
-                },
-                properties: {
-                    location
-                }
-            }
-        }); 
+        // let geoData = data.map(function(location){
+        //     return {
+        //         type: 'Feature',
+        //         geometry: {
+        //             type: 'Point',
+        //             coordinates: [location.longitude, location.latitude]
+        //         },
+        //         properties: {
+        //             location
+        //         }
+        //     }
+        // }); 
+        // console.log(geoData)
         // this.RemoveLayer("site");
-        L.geoJson(geoData, {
+        // console.log(data)
+        L.geoJson(data, {
             onEachFeature: function (feature, layer) {
                 // layer.setIcon(site_map.icons.default);
-               
-                let html = '<h5>' + feature.properties.ville + ': <b>' + feature.properties.id_station + '</b></h5>';
+                console.log(feature);
+                let html = '<h5>' + feature.properties.ville + ': <b>' + feature.properties.id_station + '</b></h5><br>';
+                let keys = Object.keys(feature.properties)
+                keys.forEach((key)=>{
+                    console.log(key)
+                    if(key.split("/").length > 1){
+                        html = html + key + " : Température " + feature.properties[key]["temperature"] + ", Humidité " + feature.properties[key]["temperature"] + "<br>"
+                    }
+                });
+                layer.bindPopup(html);
                 // if (filter) {
                 //     for (const [key, value] of Object.entries(filter)) {
                 //         if (Array.isArray(value)) {
@@ -81,12 +92,12 @@ class Seven_map {
                 //             html = html + '<span class="badge bg-light-blue">' + value + ': ' + feature.properties[key][value] + '</span>';
                 //         }
                 //     };
-                //     layer.bindPopup(
-                //         html +
-                //         '<br>' + feature.properties.adresse + '<br>' + feature.properties.code_postal + ' ' + feature.properties.ville + '<br>' +
-                //         '<br><a href="site/' + feature.id + '/index" role="button" class="btn btn-primary btn-sm btn-block active"><i class="fas fa-search-location a-margin-right"></i> Consulter</a>',
-                //         site_map.customOptions
-                //     );
+                    // layer.bindPopup(
+                    //     html +
+                    //     '<br>' + feature.properties. + '<br>' + feature.properties.code_postal + ' ' + feature.properties.ville + '<br>' +
+                    //     '<br><a href="site/' + feature.id + '/index" role="button" class="btn btn-primary btn-sm btn-block active"><i class="fas fa-search-location a-margin-right"></i> Consulter</a>',
+                    //     site_map.customOptions
+                    // );
                 // } else {
                 //     layer.bindPopup(
                 //         html +
@@ -112,9 +123,66 @@ class Seven_map {
     Display(filter = {}) {
         let site_map = this;
         this.Get_geojson().then(data => {
-            console.log(data);
+            // console.log(data);
+
+            let formated_data = {
+                "type": "FeatureCollection",
+                "features": []
+            };
+            data.forEach(element => {
+                let date = moment.unix(element.timestamp).format("DD/MM/YYYY HH:mm");
+                // let temp = []
+                // temp[moment.unix(element.timestamp).format("DD/MM/YYYY HH:mm")] = element
+                // console.log(temp)
+                let test = formated_data.features.find((e) => {
+                    // console.log(e)
+                    return e.properties.id_station == element.id_station
+                });
+                
+
+                if(typeof test == "undefined"){
+                    console.log(test)
+                    formated_data.features.push({
+                        type: 'Feature',
+                        geometry: {
+                            type: 'Point',
+                            coordinates: [element.longitude, element.latitude]
+                        },
+                        properties: {
+                            "ville": element.ville,
+                            "id_station": element.id_station,
+                            "id_sonde": element.id_sonde,
+                            date : element
+                        }
+                    });
+                }else{
+                    test.properties[moment.unix(element.timestamp).format("DD/MM/YYYY HH:mm")] = element;
+                }
+
+                
+
+
+                // formated_data[element.id_sonde]["lat"] = element.latitude;
+                // formated_data[element.id_sonde]["long"] = element.longitude;
+                // formated_data[element.id_sonde]["data"] = {};
+
+
+                
+
+                // if(typeof formated_data["features"]["properties"][moment.unix(element.timestamp).format("DD/MM/YYYY HH:mm")] == "undefined"){
+                //     formated_data["features"]["properties"][moment.unix(element.timestamp).format("DD/MM/YYYY HH:mm")] = {};
+                //     formated_data["features"]["properties"][moment.unix(element.timestamp).format("DD/MM/YYYY HH:mm")] = element;
+
+                // }else{
+
+                // }
+
+
+
+            });
+            console.log(formated_data)
             // site_map.Init_sites_list(data, filter);
-            site_map.Add_markers_on_map(data, filter);
+            site_map.Add_markers_on_map(formated_data, filter);
         });
     }
 
@@ -143,9 +211,9 @@ class Seven_map {
         if (this.mapLayerGroups[type] != undefined) this.map.removeLayer(this.mapLayerGroups[type]);
         this.mapLayerGroups[type] = undefined;
     }
-   
 
-    
+
+
 }
 
 
