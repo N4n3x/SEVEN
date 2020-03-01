@@ -4,9 +4,9 @@ version: '3.1'
 services:
 
 
-  reverse:
-    image: alp1ne/ngnix
-    restart: unless-stopped
+  # reverse:
+  #   image: alp1ne/ngnix
+  #   restart: unless-stopped
 
 #-------------------- Ne marche pas
   # traefik:
@@ -51,10 +51,10 @@ services:
       - 5000:5000
     volumes: 
       - ./api:/app
-    labels:
-      - "traefik.http.routers.http_seven_api.rule=Host(`api.localhost`)"
-      - "traefik.http.routers.http_seven_api.entrypoints=web"
-      - "traefik.enable=true" #Dit a traefik de router
+    # labels:
+    #   - "traefik.http.routers.http_seven_api.rule=Host(`api.localhost`)"
+    #   - "traefik.http.routers.http_seven_api.entrypoints=web"
+    #   - "traefik.enable=true" #Dit a traefik de router
 
   seven_front:
     image: flask_base
@@ -67,10 +67,10 @@ services:
       - 5001:5000
     volumes: 
       - ./front:/app
-    labels:
-      - "traefik.http.routers.http_seven_front.rule=Host(`front.localhost`)"
-      - "traefik.http.routers.http_seven_front.entrypoints=web"
-      - "traefik.enable=true" #Dit a traefik de router
+    # labels:
+    #   - "traefik.http.routers.http_seven_front.rule=Host(`front.localhost`)"
+    #   - "traefik.http.routers.http_seven_front.entrypoints=web"
+    #   - "traefik.enable=true" #Dit a traefik de router
 # networks:
 #   internal:
 #   web:
