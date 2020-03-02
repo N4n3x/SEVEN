@@ -20,15 +20,13 @@
 
 <body>
     <!-- <button id="update_chart">UPDATE</button> -->
-    <div id="map"></div>
+    <div id="map">{{id_station}}</div>
     <!-- <canvas id="myChart"></canvas> -->
 </body>
 
 <script src="{{url_for('static', filename='map_seven.js')}}"></script>
 <script>
-    const seven_map = new Seven_map("map", 49.5, -0.1, 8, "http://192.168.1.29:5000/weather/temperature");
-    seven_map.Display();
-    
+
 </script>
 
 </html>

@@ -8,5 +8,9 @@ app = Flask(__name__)
 def get():
     return render_template("home.html")
 
+@app.route('/graphique/<string:id_station>')
+def getGraphique(id_station):
+    return render_template("home.html", id_station=id_station)
+
 if __name__ == '__main__':
     app.run(debug=True)
