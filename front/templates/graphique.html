@@ -29,12 +29,12 @@
         return new Promise(resolve => setTimeout(resolve, ms));
     }
 
-    const temp_chart = new Graph_temp();
+    const temp_chart = new Graph_temp("http://192.168.1.29:5000/weather/temperature/search/{{id_station}}");
 
     document.addEventListener("DOMContentLoaded", async function (event) {
         while (true) {
             await sleep(120000);
-            const temp_chart = new Graph_temp();
+            const temp_chart = new Graph_temp("http://192.168.1.29:5000/weather/temperature/search/{{id_station}}");
             console.log("updated: " + moment().format());
         }
     });
