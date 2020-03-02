@@ -45,6 +45,19 @@ class TempList(Resource):
         id_res = collection.insert_one(api.payload).inserted_id
         result = collection.find_one({"_id" : id_res}, {"_id" : 0})
         return result
+
+@ns.route('/temperature/search/<string:id_station>')
+class ByStation(Resource):
+    @ns.doc('list_temperature_by_station')
+    @ns.marshal_with(temperature, True)
+    def get(self, id_station):
+        data = collection.find({"id_station" : id_station}, {"_id" : 0})
+        data_parsed = []
+        for x in data:
+            data_parsed.append(x)
+        print(data_parsed)
+        return data_parsed
+
     
 @app.after_request
 def after_request(response):
